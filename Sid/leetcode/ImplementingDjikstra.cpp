@@ -57,3 +57,6 @@ int main()
 
     cout << findShortestDistance(weight_matrix, 0, num_vertices) << endl;
 }
+
+// watch striver for theory -
+// https://www.youtube.com/watch?v=V6H1qAeB-l4&list=PLgUwDviBIf0rGEWe64KWas0Nryn7SCRWw&index=20&t=1080s
