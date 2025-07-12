@@ -12,7 +12,6 @@ int main()
     cin >> tc;
     while (tc--)
     {
-        
     }
 
     return 0;
