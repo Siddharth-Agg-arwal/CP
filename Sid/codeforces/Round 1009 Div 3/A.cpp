@@ -12,6 +12,16 @@ int main()
     cin >> tc;
     while (tc--)
     {
+        int l, r, d, u;
+        cin >> l >> r >> d >> u;
+        if (l == r && r == d && d == u)
+        {
+            cout << "YES\n";
+        }
+        else
+        {
+            cout << "NO\n";
+        }
     }
 
     return 0;

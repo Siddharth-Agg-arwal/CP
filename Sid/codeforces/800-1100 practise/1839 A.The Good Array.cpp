@@ -12,6 +12,10 @@ int main()
     cin >> tc;
     while (tc--)
     {
+        double n, k;
+        cin >> n >> k;
+
+        cout << int(ceil((n - 1) / k) + 1) << endl;
     }
 
     return 0;

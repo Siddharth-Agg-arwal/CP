@@ -12,6 +12,17 @@ int main()
     cin >> tc;
     while (tc--)
     {
+        int x;
+        cin >> x;
+
+        int val = 1e9;
+        while (x > 0)
+        {
+            val = min(val, x % 10);
+            x = x / 10;
+        }
+
+        cout << val << endl;
     }
 
     return 0;
