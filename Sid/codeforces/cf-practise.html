@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mastering Codeforces: Div 2C & 3D</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Chosen Palette: "Warm Neutral" - A calming palette with a warm off-white background, dark slate text, and subtle amber/teal accents for focus and interaction. -->
+    <!-- Application Structure Plan: A single-page application with a fixed sidebar for navigation and a main content area for scrollable thematic sections. This structure was chosen to allow users to easily jump between theoretical concepts (like algorithms or math) and practical application (the practice problems), which is a common user flow for a learning resource. Key interactions include toggling content in the 'Core Concepts' section and a fully interactive, searchable table in the 'Practice Arena' to make finding relevant problems effortless. -->
+        <!-- Visualization & Content Choices: 
+            - Report Info: Problem difficulty ratings. -> Goal: Compare. -> Viz: Overlapping Bar Chart (Chart.js). -> Interaction: Hover tooltips. -> Justification: Visually and immediately conveys the progression and overlap between Div 3 D and Div 2 C.
+            - Report Info: Algorithms, Data Structures, Math Concepts. -> Goal: Inform/Organize. -> Presentation: Interactive Cards (HTML/CSS/JS). -> Interaction: Click to reveal details. -> Justification: Breaks down dense information into digestible, user-driven chunks, preventing cognitive overload.
+            - Report Info: Curated problem lists. -> Goal: Organize/Explore. -> Presentation: Interactive Table (HTML/JS). -> Interaction: Search, sort, filter. -> Justification: Transforms a static list into a powerful, usable tool for targeted practice.
+            - Report Info: Problem-solving strategies. -> Goal: Inform. -> Presentation: Grid layout with icons. -> Interaction: Static display. -> Justification: A clean, scannable layout for high-level concepts that don't require deep interaction.
+        -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #fdfbf8; /* Warm Off-White */
+        color: #334155; /* Slate 700 */
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 250px;
+        max-height: 300px;
+      }
+      @media (min-width: 768px) {
+        .chart-container {
+          height: 300px;
+        }
+      }
+      .nav-link {
+        transition: all 0.2s ease-in-out;
+      }
+      .nav-link.active {
+        background-color: #fbbf24; /* Amber 400 */
+        color: #1e293b; /* Slate 800 */
+        font-weight: 600;
+      }
+      .nav-link:not(.active):hover {
+        background-color: #475569; /* Slate 600 */
+        color: #f8fafc; /* Slate 50 */
+      }
+      .concept-card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+      }
+      .concept-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+          0 4px 6px -4px rgb(0 0 0 / 0.1);
+      }
+      .table-sortable th {
+        cursor: pointer;
+      }
+      .table-sortable th:hover {
+        background-color: #f1f5f9; /* Slate 100 */
+      }
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f5f9;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #94a3b8;
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #64748b;
+      }
+    </style>
+  </head>
+  <body class="flex min-h-screen">
+    <!-- Sidebar Navigation -->
+    <nav
+      class="hidden lg:block w-64 bg-slate-800 text-slate-200 p-4 fixed h-full"
+    >
+      <h2
+        class="text-xl font-bold text-white mb-6 border-b border-slate-600 pb-4"
+      >
+        Mastery Guide
+      </h2>
+      <ul class="space-y-2" id="desktop-nav">
+        <li>
+          <a href="#overview" class="nav-link block p-3 rounded-lg">Overview</a>
+        </li>
+        <li>
+          <a href="#concepts" class="nav-link block p-3 rounded-lg"
+            >Core Concepts</a
+          >
+        </li>
+        <li>
+          <a href="#strategies" class="nav-link block p-3 rounded-lg"
+            >Solving Strategies</a
+          >
+        </li>
+        <li>
+          <a href="#practice" class="nav-link block p-3 rounded-lg"
+            >Practice Arena</a
+          >
+        </li>
+        <li>
+          <a href="#conclusion" class="nav-link block p-3 rounded-lg"
+            >Conclusion</a
+          >
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="w-full lg:ml-64">
+      <div class="p-4 md:p-8 lg:p-12">
+        <!-- Mobile Header -->
+        <header class="lg:hidden mb-6">
+          <div
+            class="flex justify-between items-center bg-slate-800 text-white p-4 rounded-lg shadow-md"
+          >
+            <h1 class="text-xl font-bold">Mastery Guide</h1>
+            <button
+              id="mobile-menu-button"
+              class="p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-400"
+            >
+              <span class="text-2xl">☰</span>
+            </button>
+          </div>
+          <div id="mobile-menu" class="hidden mt-2 bg-slate-700 rounded-lg">
+            <ul class="flex flex-col p-2 space-y-1" id="mobile-nav">
+              <li>
+                <a href="#overview" class="nav-link block p-3 rounded-lg"
+                  >Overview</a
+                >
+              </li>
+              <li>
+                <a href="#concepts" class="nav-link block p-3 rounded-lg"
+                  >Core Concepts</a
+                >
+              </li>
+              <li>
+                <a href="#strategies" class="nav-link block p-3 rounded-lg"
+                  >Solving Strategies</a
+                >
+              </li>
+              <li>
+                <a href="#practice" class="nav-link block p-3 rounded-lg"
+                  >Practice Arena</a
+                >
+              </li>
+              <li>
+                <a href="#conclusion" class="nav-link block p-3 rounded-lg"
+                  >Conclusion</a
+                >
+              </li>
+            </ul>
+          </div>
+        </header>
+
+        <!-- Section 1: Overview -->
+        <section
+          id="overview"
+          class="mb-16 min-h-screen flex flex-col justify-center"
+        >
+          <h1 class="text-4xl md:text-5xl font-bold text-slate-800 mb-4">
+            Mastering Codeforces Div 2C & 3D
+          </h1>
+          <p class="text-lg text-slate-600 mb-8 max-w-3xl">
+            This guide transforms the comprehensive report on competitive
+            programming into an interactive experience. It's designed to help
+            you bridge the gap from foundational knowledge to advanced
+            application, focusing on the critical 1200-1800 rating range that
+            defines the journey to becoming an Expert.
+          </p>
+          <div
+            class="bg-white p-6 rounded-xl shadow-lg border border-slate-200"
+          >
+            <h3 class="text-2xl font-semibold text-center mb-2">
+              The Path to Expert: Rating Progression
+            </h3>
+            <p class="text-center text-slate-500 mb-6">
+              This chart visualizes the difficulty overlap between Div 3 D and
+              Div 2 C problems. Notice how mastering Div 3 D problems is a
+              direct stepping stone to tackling Div 2 C, forming a continuous
+              path of skill development. Hover over the bars for specific rating
+              details.
+            </p>
+            <div class="chart-container">
+              <canvas id="difficultyChart"></canvas>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 2: Core Concepts -->
+        <section id="concepts" class="mb-16">
+          <h2 class="text-3xl font-bold mb-2">Core Concepts</h2>
+          <p class="text-slate-600 mb-8">
+            This section is your arsenal. It covers the essential algorithms,
+            data structures, and mathematical principles you'll need. Click on a
+            category to explore the topics within it. Each card provides a
+            high-level overview; click the card itself for more detailed
+            information and common use cases.
+          </p>
+
+          <div class="flex justify-center mb-8 border-b border-slate-300">
+            <button
+              data-tab="algorithms"
+              class="tab-button px-6 py-3 font-semibold border-b-2 border-amber-500 text-amber-600"
+            >
+              Algorithms
+            </button>
+            <button
+              data-tab="datastructures"
+              class="tab-button px-6 py-3 font-semibold border-b-2 border-transparent text-slate-500"
+            >
+              Data Structures
+            </button>
+            <button
+              data-tab="math"
+              class="tab-button px-6 py-3 font-semibold border-b-2 border-transparent text-slate-500"
+            >
+              Mathematics
+            </button>
+          </div>
+
+          <div id="concepts-content">
+            <!-- Content will be dynamically inserted here -->
+          </div>
+        </section>
+
+        <!-- Section 3: Solving Strategies -->
+        <section id="strategies" class="mb-16">
+          <h2 class="text-3xl font-bold mb-2">
+            Advanced Problem-Solving Strategies
+          </h2>
+          <p class="text-slate-600 mb-8">
+            Technical knowledge is only half the battle. Success hinges on your
+            approach. This section details the crucial "meta-skills"—the mindset
+            and strategies that separate good programmers from great ones.
+            Internalize these principles to improve your thinking process during
+            contests.
+          </p>
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Strategy Cards -->
+            <div
+              class="bg-white p-6 rounded-xl shadow-lg border border-slate-200"
+            >
+              <h3 class="text-xl font-semibold mb-2 flex items-center">
+                <span class="text-2xl mr-3">💡</span>Intuition & Pattern
+                Recognition
+              </h3>
+              <p class="text-slate-600">
+                Cultivate the ability to see the underlying structure of a
+                problem. This comes from practice, not genius. Actively look for
+                invariants, simplify with small examples, and build a mental
+                library of problem patterns.
+              </p>
+            </div>
+            <div
+              class="bg-white p-6 rounded-xl shadow-lg border border-slate-200"
+            >
+              <h3 class="text-xl font-semibold mb-2 flex items-center">
+                <span class="text-2xl mr-3">🎯</span>Edge Cases & Constraints
+              </h3>
+              <p class="text-slate-600">
+                Always start by analyzing the constraints. They dictate the
+                required complexity of your solution. Systematically think about
+                minimums, maximums, and special values that could break your
+                logic.
+              </p>
+            </div>
+            <div
+              class="bg-white p-6 rounded-xl shadow-lg border border-slate-200"
+            >
+              <h3 class="text-xl font-semibold mb-2 flex items-center">
+                <span class="text-2xl mr-3">⏱️</span>Complexity Analysis
+              </h3>
+              <p class="text-slate-600">
+                Master Big O notation. A theoretically correct but slow
+                algorithm is a wrong answer. Be able to quickly estimate the
+                time and space your code will consume to avoid Time Limit
+                Exceeded errors.
+              </p>
+            </div>
+            <div
+              class="bg-white p-6 rounded-xl shadow-lg border border-slate-200"
+            >
+              <h3 class="text-xl font-semibold mb-2 flex items-center">
+                <span class="text-2xl mr-3">📈</span>The Art of Upsolving
+              </h3>
+              <p class="text-slate-600">
+                The single most effective way to improve. After a contest, solve
+                the problems you couldn't. Read editorials, understand the new
+                technique, and re-implement the solution yourself. This turns
+                failure into learning.
+              </p>
+            </div>
+            <div
+              class="bg-white p-6 rounded-xl shadow-lg border border-slate-200"
+            >
+              <h3 class="text-xl font-semibold mb-2 flex items-center">
+                <span class="text-2xl mr-3">🐞</span>Systematic Debugging
+              </h3>
+              <p class="text-slate-600">
+                Develop a robust debugging process. Use print statements, trace
+                logic with pen and paper on small examples, and explain your
+                code to yourself (rubber ducking). Create custom test cases to
+                isolate bugs.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 4: Practice Arena -->
+        <section id="practice" class="mb-16">
+          <h2 class="text-3xl font-bold mb-2">Practice Arena</h2>
+          <p class="text-slate-600 mb-8">
+            Theory meets application. Here you'll find curated lists of problems
+            to hone your skills. Select a category to begin. You can search for
+            problems by name or tags, and sort the table by clicking on the
+            headers. This is your gym for building competitive programming
+            muscle.
+          </p>
+
+          <div class="flex items-center justify-between mb-6 flex-wrap gap-4">
+            <div class="flex space-x-2 rounded-lg bg-slate-200 p-1">
+              <button
+                id="btn-div3d"
+                class="practice-btn flex-1 px-4 py-2 text-sm font-semibold rounded-md bg-amber-500 text-white shadow"
+              >
+                Div. 3 (D)
+              </button>
+              <button
+                id="btn-div2c"
+                class="practice-btn flex-1 px-4 py-2 text-sm font-semibold rounded-md text-slate-600"
+              >
+                Div. 2 (C)
+              </button>
+            </div>
+            <div class="relative w-full md:w-auto">
+              <input
+                type="text"
+                id="problem-search"
+                placeholder="Search by name or tags..."
+                class="w-full md:w-72 pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400"
+              />
+              <span
+                class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                >🔍</span
+              >
+            </div>
+          </div>
+
+          <div
+            class="overflow-x-auto bg-white rounded-xl shadow-lg border border-slate-200"
+          >
+            <table class="w-full text-left table-sortable">
+              <thead class="bg-slate-50 border-b border-slate-200">
+                <tr>
+                  <th data-sort="id" class="p-4 font-semibold">Problem ID</th>
+                  <th data-sort="name" class="p-4 font-semibold">Name</th>
+                  <th data-sort="rating" class="p-4 font-semibold">Rating</th>
+                  <th class="p-4 font-semibold">Tags</th>
+                  <th class="p-4 font-semibold">Links</th>
+                </tr>
+              </thead>
+              <tbody id="problem-table-body">
+                <!-- Problems will be dynamically inserted here -->
+              </tbody>
+            </table>
+            <div id="no-results" class="hidden text-center p-8 text-slate-500">
+              <p class="text-lg font-semibold">No problems found</p>
+              <p>Try adjusting your search query.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 5: Conclusion -->
+        <section
+          id="conclusion"
+          class="text-center py-16 bg-slate-800 text-white rounded-xl"
+        >
+          <h2 class="text-3xl font-bold mb-4">Your Path to Mastery</h2>
+          <p class="text-slate-300 max-w-3xl mx-auto mb-8">
+            Achieving perfection in Div 2 C and Div 3 D problems is a marathon,
+            not a sprint. It demands consistent, deliberate effort. Success lies
+            in the intersection of knowing the tools, recognizing the patterns,
+            and applying them strategically. Use this guide as your roadmap,
+            practice diligently, and embrace the process of upsolving. Your next
+            rating jump is within reach.
+          </p>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // --- DATA ---
+        const conceptsData = {
+          algorithms: [
+            {
+              title: "Ad-Hoc & Constructive",
+              details:
+                'Creative problem-solving without a standard algorithm. Involves building a solution from scratch based on careful observations and logical deductions. Keywords: "Construct an array", "Find any valid configuration".',
+            },
+            {
+              title: "Greedy Approaches",
+              details:
+                'Making the locally optimal choice at each step, hoping to find a global optimum. Critical to prove or have strong intuition for its correctness. Keywords: "Maximize/Minimize", "Optimal choice".',
+            },
+            {
+              title: "Binary Search on Answer",
+              details:
+                'Searching for an answer in a monotonic range of possibilities, not just in a sorted array. Requires a `check` function to validate a potential answer. Keywords: "Minimum X such that Y is possible".',
+            },
+            {
+              title: "Two Pointers & Sliding Window",
+              details:
+                'Efficiently process arrays/strings in linear time. Two pointers move across the data, while a sliding window maintains a dynamic subarray/substring. Keywords: "Subarray with property", "Longest segment".',
+            },
+            {
+              title: "Optimized Brute Force",
+              details:
+                "Smarter exhaustive search. Techniques like meet-in-the-middle split the problem in half, solving each part and combining results to reduce exponential complexity (e.g., O(2^N) to O(2^(N/2))).",
+            },
+          ],
+          datastructures: [
+            {
+              title: "Standard Containers",
+              details:
+                "Maps, Sets, Priority Queues, Stacks, Queues. Master their time complexities (e.g., O(log N) vs O(1) amortized) to choose the right tool for frequency counting, ordering, etc.",
+            },
+            {
+              title: "Prefix Sums & Difference Arrays",
+              details:
+                "Precomputation techniques for arrays. Prefix sums allow O(1) range sum queries after O(N) setup. Difference arrays allow O(1) range updates.",
+            },
+            {
+              title: "Disjoint Set Union (DSU)",
+              details:
+                "Manages a collection of disjoint sets with near-constant time find/union operations (with optimizations). Essential for connectivity problems (e.g., Kruskal's MST).",
+            },
+            {
+              title: "Basic Graph Theory (BFS/DFS)",
+              details:
+                "Fundamental graph traversals. BFS finds shortest paths in unweighted graphs. DFS is versatile for cycle detection, topological sort, and exploring paths.",
+            },
+            {
+              title: "Segment & Fenwick Trees",
+              details:
+                "Advanced data structures for range queries and updates in O(log N) time. Segment trees are more versatile, while Fenwick trees are faster for range sums/point updates.",
+            },
+          ],
+          math: [
+            {
+              title: "Number Theory",
+              details:
+                "Core concepts include GCD (Euclidean Algorithm), primality testing (Sieve of Eratosthenes), and modular arithmetic (addition, multiplication, modular inverse for division).",
+            },
+            {
+              title: "Modular Exponentiation",
+              details:
+                "Efficiently calculates (a^b) % M using binary exponentiation (exponentiation by squaring), crucial for problems with large powers under a modulus.",
+            },
+            {
+              title: "Combinatorics",
+              details:
+                "The art of counting. Includes permutations, combinations, and calculating binomial coefficients (nCr), often modulo a large prime.",
+            },
+          ],
+        };
+
+        const problemsData = {
+          div3d: [
+            {
+              id: "2114D",
+              name: "Come a Little Closer",
+              rating: 1400,
+              tags: ["greedy", "brute force"],
+              link: "https://codeforces.com/problemset/problem/1749/D",
+            },
+            {
+              id: "903D",
+              name: "Divide and Equalize",
+              rating: 1300,
+              tags: ["math", "factorization"],
+              link: "https://codeforces.com/problemset/problem/1881/D",
+            },
+            {
+              id: "1537D",
+              name: "Integers Have Friends",
+              rating: 1800,
+              tags: ["binary search", "math", "two pointers"],
+              link: "https://codeforces.com/problemset/problem/1537/D",
+            },
+            {
+              id: "1437D",
+              name: "Deleting Divisors",
+              rating: 1600,
+              tags: ["games", "math", "number theory"],
+              link: "https://codeforces.com/problemset/problem/1437/D",
+            },
+            {
+              id: "2123D",
+              name: "Binary String Battle",
+              rating: 1400,
+              tags: ["greedy", "implementation"],
+              link: "https://codeforces.com/problemset/problem/1734/D",
+            },
+            {
+              id: "1881D",
+              name: "Divide and Equalize",
+              rating: 1300,
+              tags: ["math", "number theory", "factorization"],
+              link: "https://codeforces.com/problemset/problem/1881/D",
+            },
+            {
+              id: "1873D",
+              name: "Roulette",
+              rating: 1200,
+              tags: ["greedy", "implementation"],
+              link: "https://codeforces.com/problemset/problem/1873/D",
+            },
+            {
+              id: "1857D",
+              name: "Strong Vertices",
+              rating: 1400,
+              tags: ["graphs", "greedy"],
+              link: "https://codeforces.com/problemset/problem/1857/D",
+            },
+            {
+              id: "1843D",
+              name: "Tree Queries",
+              rating: 1400,
+              tags: ["dfs and similar", "trees"],
+              link: "https://codeforces.com/problemset/problem/1843/D",
+            },
+            {
+              id: "1833D",
+              name: "Permutation Game",
+              rating: 1300,
+              tags: ["greedy", "permutations"],
+              link: "https://codeforces.com/problemset/problem/1833/D",
+            },
+            {
+              id: "1829D",
+              name: "Gold Rush",
+              rating: 1300,
+              tags: ["dfs and similar", "dp", "recursion"],
+              link: "https://codeforces.com/problemset/problem/1829/D",
+            },
+            {
+              id: "1807D",
+              name: "Odd Queries",
+              rating: 1200,
+              tags: ["prefix sums", "implementation"],
+              link: "https://codeforces.com/problemset/problem/1807/D",
+            },
+            {
+              id: "1791D",
+              name: "Distinct Split",
+              rating: 1300,
+              tags: ["strings", "two pointers", "hashing"],
+              link: "https://codeforces.com/problemset/problem/1791/D",
+            },
+            {
+              id: "1749D",
+              name: "Counting Divisors",
+              rating: 1400,
+              tags: ["math", "number theory"],
+              link: "https://codeforces.com/problemset/problem/1749/D",
+            },
+            {
+              id: "1734D",
+              name: "Slime Escape",
+              rating: 1400,
+              tags: ["greedy", "dp"],
+              link: "https://codeforces.com/problemset/problem/1734/D",
+            },
+            {
+              id: "1703D",
+              name: "Double Strings",
+              rating: 1200,
+              tags: ["strings", "hashing", "implementation"],
+              link: "https://codeforces.com/problemset/problem/1703/D",
+            },
+            {
+              id: "1692D",
+              name: "The Clock",
+              rating: 1200,
+              tags: ["implementation", "math"],
+              link: "https://codeforces.com/problemset/problem/1692/D",
+            },
+            {
+              id: "1676D",
+              name: "X-Sum",
+              rating: 1300,
+              tags: ["implementation", "matrices"],
+              link: "https://codeforces.com/problemset/problem/1676/D",
+            },
+            {
+              id: "1669D",
+              name: "Colorful Stamp",
+              rating: 1200,
+              tags: ["greedy", "strings"],
+              link: "https://codeforces.com/problemset/problem/1669/D",
+            },
+            {
+              id: "1650D",
+              name: "Twist and Shout",
+              rating: 1400,
+              tags: ["implementation", "arrays"],
+              link: "https://codeforces.com/problemset/problem/1650/D",
+            },
+          ],
+          div2c: [
+            {
+              id: "2118C",
+              name: "Make It Beautiful",
+              rating: 1400,
+              tags: ["greedy", "math", "sortings"],
+              link: "https://codeforces.com/problemset/problem/1783/C",
+            },
+            {
+              id: "321C",
+              name: "Kefa and Park",
+              rating: 1600,
+              tags: ["dfs", "graphs", "trees"],
+              link: "https://codeforces.com/problemset/problem/580/C",
+            },
+            {
+              id: "266C",
+              name: "Number of Ways",
+              rating: 1600,
+              tags: ["dp", "prefix sums"],
+              link: "https://codeforces.com/problemset/problem/466/C",
+            },
+            {
+              id: "260C",
+              name: "Boredom",
+              rating: 1600,
+              tags: ["dp", "greedy"],
+              link: "https://codeforces.com/problemset/problem/455/A",
+            },
+            {
+              id: "1416C",
+              name: "Diluc and Kaeya",
+              rating: 1700,
+              tags: ["data structures", "math", "hashing"],
+              link: "https://codeforces.com/problemset/problem/1536/C",
+            },
+            {
+              id: "1899C",
+              name: "Vasilisa and the Two-colored Graph",
+              rating: 1500,
+              tags: ["graphs", "dfs and similar"],
+              link: "https://codeforces.com/problemset/problem/1899/C",
+            },
+            {
+              id: "1873C",
+              name: "Target Practice",
+              rating: 1400,
+              tags: ["implementation", "math"],
+              link: "https://codeforces.com/problemset/problem/1873/C",
+            },
+            {
+              id: "1857C",
+              name: "Array Elimination",
+              rating: 1500,
+              tags: ["bitmasks", "math"],
+              link: "https://codeforces.com/problemset/problem/1857/C",
+            },
+            {
+              id: "1843C",
+              name: "Sum of Subsequences",
+              rating: 1500,
+              tags: ["greedy", "math", "bitmasks"],
+              link: "https://codeforces.com/problemset/problem/1843/C",
+            },
+            {
+              id: "1833C",
+              name: "Vlad and a Sum of Sums",
+              rating: 1600,
+              tags: ["data structures", "prefix sums", "sortings"],
+              link: "https://codeforces.com/problemset/problem/1833/C",
+            },
+            {
+              id: "1829C",
+              name: "Book Reading",
+              rating: 1500,
+              tags: ["greedy", "sortings"],
+              link: "https://codeforces.com/problemset/problem/1829/C",
+            },
+            {
+              id: "1807C",
+              name: "Find and Replace",
+              rating: 1400,
+              tags: ["strings", "implementation"],
+              link: "https://codeforces.com/problemset/problem/1807/C",
+            },
+            {
+              id: "1791C",
+              name: "Prepend and Append",
+              rating: 1400,
+              tags: ["strings", "two pointers"],
+              link: "https://codeforces.com/problemset/problem/1791/C",
+            },
+            {
+              id: "1749C",
+              name: "Game on Permutation",
+              rating: 1500,
+              tags: ["games", "greedy", "permutations"],
+              link: "https://codeforces.com/problemset/problem/1749/C",
+            },
+            {
+              id: "1734C",
+              name: "Removing Columns",
+              rating: 1500,
+              tags: ["dp", "strings"],
+              link: "https://codeforces.com/problemset/problem/1734/C",
+            },
+            {
+              id: "1703C",
+              name: "Cypher",
+              rating: 1400,
+              tags: ["implementation", "math"],
+              link: "https://codeforces.com/problemset/problem/1703/C",
+            },
+            {
+              id: "1692C",
+              name: "Where is the Bishop?",
+              rating: 1400,
+              tags: ["implementation", "matrices"],
+              link: "https://codeforces.com/problemset/problem/1692/C",
+            },
+            {
+              id: "1676C",
+              name: "Most Similar Words",
+              rating: 1500,
+              tags: ["strings", "brute force"],
+              link: "https://codeforces.com/problemset/problem/1676/C",
+            },
+            {
+              id: "1669C",
+              name: "Parity Shuffle Sorting",
+              rating: 1500,
+              tags: ["sortings", "implementation"],
+              link: "https://codeforces.com/problemset/problem/1669/C",
+            },
+            {
+              id: "1650C",
+              name: "Min Max Array",
+              rating: 1600,
+              tags: ["greedy", "arrays"],
+              link: "https://codeforces.com/problemset/problem/1650/C",
+            },
+          ],
+        };
+
+        let currentProblemSet = "div3d";
+        let currentSort = { key: "id", order: "asc" };
+
+        // --- INITIALIZATION ---
+        function init() {
+          renderDifficultyChart();
+          setupEventListeners();
+          renderConcepts("algorithms");
+          renderProblems();
+          updateActiveSection();
+        }
+
+        // --- RENDER FUNCTIONS ---
+        function renderDifficultyChart() {
+          const ctx = document
+            .getElementById("difficultyChart")
+            .getContext("2d");
+          new Chart(ctx, {
+            type: "bar",
+            data: {
+              labels: ["Problem Category"],
+              datasets: [
+                {
+                  label: "Div 3 (D)",
+                  data: [{ x: [1200, 1400], y: "Problem Category" }],
+                  backgroundColor: "rgba(56, 189, 248, 0.7)", // Sky 400
+                  borderColor: "rgba(14, 165, 233, 1)", // Sky 500
+                  borderWidth: 1,
+                  barPercentage: 0.5,
+                  categoryPercentage: 0.8,
+                },
+                {
+                  label: "Div 2 (C)",
+                  data: [{ x: [1400, 1800], y: "Problem Category" }],
+                  backgroundColor: "rgba(251, 191, 36, 0.7)", // Amber 400
+                  borderColor: "rgba(245, 158, 11, 1)", // Amber 500
+                  borderWidth: 1,
+                  barPercentage: 0.5,
+                  categoryPercentage: 0.8,
+                },
+              ],
+            },
+            options: {
+              indexAxis: "y",
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                x: {
+                  min: 1000,
+                  max: 2000,
+                  title: {
+                    display: true,
+                    text: "Codeforces Rating",
+                  },
+                },
+                y: {
+                  stacked: true,
+                  grid: {
+                    display: false,
+                  },
+                },
+              },
+              plugins: {
+                legend: {
+                  position: "top",
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function (context) {
+                      const raw = context.raw.x;
+                      return `${context.dataset.label}: ${raw[0]} - ${raw[1]}`;
+                    },
+                  },
+                },
+              },
+            },
+          });
+        }
+
+        function renderConcepts(category) {
+          const container = document.getElementById("concepts-content");
+          const data = conceptsData[category] || [];
+          container.innerHTML = `<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            ${data
+              .map(
+                (item) => `
+                <div class="concept-card bg-white p-6 rounded-xl shadow-lg border border-slate-200 cursor-pointer" onclick="this.querySelector('p').classList.toggle('hidden')">
+                    <h4 class="text-xl font-semibold mb-2">${item.title}</h4>
+                    <p class="text-slate-600 hidden">${item.details}</p>
+                </div>
+            `
+              )
+              .join("")}
+        </div>`;
+        }
+
+        function renderProblems() {
+          const searchInput = document
+            .getElementById("problem-search")
+            .value.toLowerCase();
+          let problems = [...problemsData[currentProblemSet]];
+
+          if (searchInput) {
+            problems = problems.filter(
+              (p) =>
+                p.name.toLowerCase().includes(searchInput) ||
+                p.tags.some((tag) => tag.toLowerCase().includes(searchInput))
+            );
+          }
+
+          problems.sort((a, b) => {
+            let valA = a[currentSort.key];
+            let valB = b[currentSort.key];
+            if (typeof valA === "string") {
+              valA = valA.toLowerCase();
+              valB = valB.toLowerCase();
+            }
+            if (valA < valB) return currentSort.order === "asc" ? -1 : 1;
+            if (valA > valB) return currentSort.order === "asc" ? 1 : -1;
+            return 0;
+          });
+
+          const tableBody = document.getElementById("problem-table-body");
+          const noResultsDiv = document.getElementById("no-results");
+          if (problems.length === 0) {
+            tableBody.innerHTML = "";
+            noResultsDiv.classList.remove("hidden");
+          } else {
+            noResultsDiv.classList.add("hidden");
+            tableBody.innerHTML = problems
+              .map(
+                (p) => `
+                <tr class="border-b border-slate-200 hover:bg-slate-50">
+                    <td class="p-4">${p.id}</td>
+                    <td class="p-4 font-medium text-slate-800">${p.name}</td>
+                    <td class="p-4">${p.rating}</td>
+                    <td class="p-4">
+                        <div class="flex flex-wrap gap-1">
+                            ${p.tags
+                              .map(
+                                (tag) =>
+                                  `<span class="bg-slate-200 text-slate-700 text-xs font-semibold px-2 py-1 rounded-full">${tag}</span>`
+                              )
+                              .join("")}
+                        </div>
+                    </td>
+                    <td class="p-4">
+                        <a href="${
+                          p.link
+                        }" target="_blank" class="text-amber-600 hover:text-amber-700 font-semibold">Solve →</a>
+                    </td>
+                </tr>
+            `
+              )
+              .join("");
+          }
+        }
+
+        // --- EVENT LISTENERS & HANDLERS ---
+        function setupEventListeners() {
+          document.querySelectorAll(".tab-button").forEach((button) => {
+            button.addEventListener("click", () => {
+              document.querySelectorAll(".tab-button").forEach((btn) => {
+                btn.classList.remove("border-amber-500", "text-amber-600");
+                btn.classList.add("border-transparent", "text-slate-500");
+              });
+              button.classList.add("border-amber-500", "text-amber-600");
+              button.classList.remove("border-transparent", "text-slate-500");
+              renderConcepts(button.dataset.tab);
+            });
+          });
+
+          document
+            .getElementById("btn-div3d")
+            .addEventListener("click", () => switchProblemSet("div3d"));
+          document
+            .getElementById("btn-div2c")
+            .addEventListener("click", () => switchProblemSet("div2c"));
+          document
+            .getElementById("problem-search")
+            .addEventListener("input", renderProblems);
+
+          document
+            .querySelectorAll(".table-sortable th[data-sort]")
+            .forEach((header) => {
+              header.addEventListener("click", () => {
+                const key = header.dataset.sort;
+                if (currentSort.key === key) {
+                  currentSort.order =
+                    currentSort.order === "asc" ? "desc" : "asc";
+                } else {
+                  currentSort.key = key;
+                  currentSort.order = "asc";
+                }
+                renderProblems();
+              });
+            });
+
+          // Mobile menu toggle
+          const mobileMenuButton =
+            document.getElementById("mobile-menu-button");
+          const mobileMenu = document.getElementById("mobile-menu");
+          mobileMenuButton.addEventListener("click", () => {
+            mobileMenu.classList.toggle("hidden");
+          });
+
+          // Close mobile menu on link click
+          document.querySelectorAll("#mobile-nav a").forEach((link) => {
+            link.addEventListener("click", () => {
+              mobileMenu.classList.add("hidden");
+            });
+          });
+
+          // Active nav link highlighting on scroll
+          const sections = document.querySelectorAll("section");
+          const navLinks = document.querySelectorAll(".nav-link");
+          window.addEventListener("scroll", () => {
+            let current = "";
+            sections.forEach((section) => {
+              const sectionTop = section.offsetTop;
+              if (pageYOffset >= sectionTop - 100) {
+                current = section.getAttribute("id");
+              }
+            });
+
+            navLinks.forEach((link) => {
+              link.classList.remove("active");
+              if (link.getAttribute("href").includes(current)) {
+                link.classList.add("active");
+              }
+            });
+          });
+        }
+
+        function switchProblemSet(set) {
+          currentProblemSet = set;
+          document
+            .getElementById("btn-div3d")
+            .classList.toggle("bg-amber-500", set === "div3d");
+          document
+            .getElementById("btn-div3d")
+            .classList.toggle("text-white", set === "div3d");
+          document
+            .getElementById("btn-div3d")
+            .classList.toggle("shadow", set === "div3d");
+          document
+            .getElementById("btn-div3d")
+            .classList.toggle("text-slate-600", set !== "div3d");
+
+          document
+            .getElementById("btn-div2c")
+            .classList.toggle("bg-amber-500", set === "div2c");
+          document
+            .getElementById("btn-div2c")
+            .classList.toggle("text-white", set === "div2c");
+          document
+            .getElementById("btn-div2c")
+            .classList.toggle("shadow", set === "div2c");
+          document
+            .getElementById("btn-div2c")
+            .classList.toggle("text-slate-600", set !== "div2c");
+          renderProblems();
+        }
+
+        function updateActiveSection() {
+          // Initial active state
+          const hash = window.location.hash || "#overview";
+          document.querySelectorAll(".nav-link").forEach((link) => {
+            link.classList.toggle("active", link.getAttribute("href") === hash);
+          });
+        }
+
+        init();
+      });
+    </script>
+  </body>
+</html>
